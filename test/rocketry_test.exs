@@ -17,4 +17,8 @@ defmodule RocketryTest do
     assert Physics.Rocketry.escape_velocity(:moon) == 2.4
   end
 
+  test "Orbital acceleration for 100km height should be around 9.6" do
+    assert Physics.Rocketry.orbital_acceleration(100) |> Calcs.to_nearest_tenth == 9.6
+  end
+
 end

@@ -3,8 +3,8 @@ defmodule Calcs do
     Float.ceil(val, 1)
   end
 
-  def to_km(velocity) do
-    velocity / 1000
+  def to_km(val) do
+    val / 1000
   end
 
   def to_m(height) do
@@ -24,7 +24,15 @@ defmodule Calcs do
   end
 
   def seconds_to_hours(time) do
-    time / 3600 |> to_nearest_tenth 
+    time / 3600 |> to_nearest_tenth
+  end
+
+  def hours_to_seconds(time) do
+    time * 3600
+  end
+
+  def cube_root(val) do
+    :math.pow(val, 1/3)
   end
 
 end

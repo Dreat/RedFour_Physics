@@ -27,8 +27,23 @@ defmodule Physics.Rocketry do
   end
 
   def orbital_speed(height) do
-    newtons_gravitational_constant * earth.mass / orbital_radius(height)
+    height
+      |> orbital_speed(earth)
+  end
+
+  def orbital_speed(height, %{mass: mass, radius: _}) do
+    newtons_gravitational_constant * mass / orbital_radius(height)
       |> square_root
+  end
+
+  def orbital_speed(height, :mars) do
+    height
+      |> orbital_speed(mars)
+  end
+
+  def orbital_speed(height, :moon) do
+    height
+      |> orbital_speed(moon)
   end
 
   def orbital_acceleration(height) do
@@ -36,10 +51,47 @@ defmodule Physics.Rocketry do
   end
 
   def orbital_term(height) do
-    4 * (:math.pi |> squared) * (orbital_radius(height) |> cubed) / (newtons_gravitational_constant * earth.mass)
+    height
+      |> orbital_term(earth)
+  end
+
+  def orbital_term(height, %{mass: mass, radius: _}) do
+    4 * (:math.pi |> squared) * (orbital_radius(height) |> cubed) / (newtons_gravitational_constant * mass)
       |> square_root
       |> seconds_to_hours
   end
+
+  def orbital_term(height, :mars) do
+    height
+      |> orbital_term(mars)
+  end
+
+  def orbital_term(height, :moon) do
+    height
+      |> orbital_term(moon)
+  end
+
+  def calculate_orbital_radius(time) do
+    time
+      |> calculate_orbital_radius(earth)
+  end
+
+  def calculate_orbital_radius(time, %{mass: mass, radius: _}) do
+    newtons_gravitational_constant * mass * (time |> hours_to_seconds) / (4 * (:math.pi |> squared))
+      |> cube_root
+      |> to_km
+  end
+
+  def calculate_orbital_radius(time, :mars) do
+    time
+      |> calculate_orbital_radius(mars)
+  end
+
+  def calculate_orbital_radius(time, :moon) do
+    time
+      |> calculate_orbital_radius(moon)
+  end
+
 
   defp calculate_escape(%{mass: mass, radius: radius}) do
     2 * newtons_gravitational_constant * mass / radius

@@ -21,4 +21,8 @@ defmodule RocketryTest do
     assert Physics.Rocketry.orbital_acceleration(100) |> Calcs.to_nearest_tenth == 9.6
   end
 
+  test "Orbital radius to achieve 4 hours orbital term should be around 526km" do
+    assert Physics.Rocketry.calculate_orbital_radius(4) |> Calcs.to_nearest_tenth == 525.8
+  end
+
 end

@@ -1,0 +1,3 @@
+defmodule Solar do
+
+end

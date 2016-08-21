@@ -1,5 +1,5 @@
 defmodule RocketryTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
 
   test "Earth's escape velocity should be calculated properly" do
     assert Physics.Rocketry.escape_velocity(:earth) == 11.2

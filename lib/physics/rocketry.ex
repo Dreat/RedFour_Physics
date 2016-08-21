@@ -1,7 +1,7 @@
 defmodule Physics.Rocketry do
 
   import Calcs
-  import Physics.Laws
+  import Physics.Laws, only: [newtons_gravitational_constant: 0]
   import Planets
 
   def escape_velocity(:earth) do

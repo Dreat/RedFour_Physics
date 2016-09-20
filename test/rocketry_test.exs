@@ -1,28 +1,37 @@
 defmodule RocketryTest do
   use ExUnit.Case, async: true
 
-  test "Earth's escape velocity should be calculated properly" do
-    assert Physics.Rocketry.escape_velocity(:earth) == 11.2
-  end
+  import Physics.Rocketry
 
-  test "Planet with 8x mass and 2x radius should have twice the escape velocity" do
-    assert Physics.Rocketry.escape_velocity(%{mass: 5.972e24 * 8, radius: 6.371e6 * 2}) == 22.4
+  test "Earth's escape velocity should be calculated properly" do
+    assert Planet.load[:earth].ev == 11.2
   end
 
   test "Mars' escape velocity should equal 5.1km/s" do
-    assert Physics.Rocketry.escape_velocity(:mars) == 5.1
-  end
-
-  test "Moon's escape velocity should equal 2.4km/s" do
-    assert Physics.Rocketry.escape_velocity(:moon) == 2.4
+    assert Planet.load[:mars].ev == 5.1
   end
 
   test "Orbital acceleration for 100km height should be around 9.6" do
-    assert Physics.Rocketry.orbital_acceleration(100) |> Calcs.to_nearest_tenth == 9.6
+    assert orbital_acceleration(100) |> Calcs.to_nearest_tenth == 9.6
   end
 
   test "Orbital radius to achieve 4 hours orbital term should be around 526km" do
-    assert Physics.Rocketry.calculate_orbital_radius(4) |> Calcs.to_nearest_tenth == 525.8
+    assert calculate_orbital_radius(4) |> Calcs.to_nearest_tenth == 525.8
+  end
+
+  test "Orbital acceleration defaults to Earth" do
+    x = orbital_acceleration(100)
+    assert x == 9.519899476599884
+  end
+
+  test "Orbital acceleration for Jupiter" do
+    x = orbital_acceleration(Planet.select[:jupiter], 100)
+    assert x == 24.670096337229204
+  end
+
+  test "Orbital term at 100km for Saturn at 6000km" do
+    x = orbital_term(Planet.select[:saturn], 6000)
+    assert x == 4.9
   end
 
 end

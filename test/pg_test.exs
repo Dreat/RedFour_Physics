@@ -16,20 +16,39 @@ defmodule PGTest do
     {:ok, data: flares}
   end
 
-  test "Connecting with postgrex", %{data: flares} do
+  # commented not to try to insert data twice
+  # yeah, I know
+  # test "Connecting with postgrex", %{data: flares} do
+  #   {:ok, pid} = Postgrex.Connection.start_link(hostname: "localhost", database: "redfour", username: "redfour", password: "redfour")
+  #
+  #   sql = """
+  #     insert into solar_flares(classification, scale, date)
+  #     values($1, $2, $3);
+  #     """
+  #
+  #   res = Enum.map flares, fn(flare) ->
+  #     ts = %Postgrex.Timestamp{year: flare.date.year, month: flare.date.month, day: flare.date.day}
+  #     Postgrex.Connection.query!(pid, sql, [Atom.to_string(flare.classification), flare.scale, ts])
+  #   end
+  #
+  #   IO.inspect res
+  #   Postgrex.Connection.stop(pid)
+  # end
+
+  test "Quering with postgrex", %{data: flares} do
     {:ok, pid} = Postgrex.Connection.start_link(hostname: "localhost", database: "redfour", username: "redfour", password: "redfour")
-
     sql = """
-      insert into solar_flares(classification, scale, date)
-      values($1, $2, $3);
-      """
+    select * from solar_flares
+    """
 
-    res = Enum.map flares, fn(flare) ->
-      ts = %Postgrex.Timestamp{year: flare.date.year, month: flare.date.month, day: flare.date.day}
-      Postgrex.Connection.query!(pid, sql, [Atom.to_string(flare.classification), flare.scale, ts])
-    end
+    res = Postgrex.Connection.query!(pid, sql, []) |> transform_result
 
     IO.inspect res
     Postgrex.Connection.stop(pid)
+  end
+
+  def transform_result(result) do
+    atomized = for col <- result.columns, do: String.to_atom(col)
+    for row <- result.rows, do: List.zip([atomized, row]) |> Enum.into(%{})
   end
 end
